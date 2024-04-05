@@ -24,38 +24,7 @@ fi
 if [ ! -d "$HOME/.avail/config" ]; then
     mkdir $HOME/.avail/config
 fi
-# check if bash is current terminal shell, else check for zsh
-if [ -z "$BASH_VERSION" ]; then
-    if [ -z "$ZSH_VERSION" ]; then
-        echo "🚫 Unable to locate a shell. Availup might not work as intended!"
-    else
-        CURRENT_TERM="zsh"
-    fi
-else
-    CURRENT_TERM="bash"
-fi
-if [ "$CURRENT_TERM" = "bash" -a -f "$HOME/.bashrc" ]; then
-    PROFILE="$HOME/.bashrc"
-elif [ "$CURRENT_TERM" = "bash" -a -f "$HOME/.bash_profile" ]; then
-    PROFILE="$HOME/.bash_profile"
-elif [ "$CURRENT_TERM" = "bash" -a -f "$HOME/.zshrc" ]; then
-    PROFILE="$HOME/.zshrc"
-elif [ "$CURRENT_TERM" = "bash" -a -f "$HOME/.zsh_profile" ]; then
-    PROFILE="$HOME/.zsh_profile"
-elif [ "$CURRENT_TERM" = "zsh" -a -f "$HOME/.zshrc" ]; then
-    PROFILE="$HOME/.zshrc"
-elif [ "$CURRENT_TERM" = "zsh" -a -f "$HOME/.zsh_profile" ]; then
-    PROFILE="$HOME/.zsh_profile"
-elif [ "$CURRENT_TERM" = "bash" ]; then
-    PROFILE="$HOME/.bashrc"
-    touch $HOME/.bashrc
-elif [ "$CURRENT_TERM" = "zsh" ]; then
-    PROFILE="$HOME/.zshrc"
-    touch $HOME/.zshrc
-else
-    echo "🫣 Unable to locate a compatible shell or rc file, using POSIX default, availup might not work as intended!"
-    PROFILE="/etc/profile"
-fi
+
 if [ -z "$network" ]; then
     echo "🛜  No network selected. Defaulting to goldberg testnet."
     NETWORK="goldberg"
@@ -157,9 +126,9 @@ onexit() {
         if ! grep -q "export PATH=\"\$PATH:$HOME/.avail/bin\"" "$PROFILE"; then
             echo -e "export PATH=\"\$PATH:$HOME/.avail/bin\"\n" >>$PROFILE
         fi
-        echo -e "📌 Avail has been added to your profile. Run the following command to load it in the current session:\n. $PROFILE\n"
+        echo -e "📌 Avail has been added to your profile. "
     fi
-    exit 0
+    exit 1
 }
 # check if avail-light binary is available and check if upgrade variable is set to 0
 if [ -f $AVAIL_BIN -a "$UPGRADE" = 0 ]; then
